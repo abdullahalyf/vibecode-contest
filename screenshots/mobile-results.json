@@ -1,13 +1,13 @@
 {
-  "url": "http://127.0.0.1:5173",
+  "url": "https://smart-escape-practice-production.up.railway.app",
   "viewport": {
     "width": 390,
     "height": 844
   },
-  "startedAt": "2026-10-05T16:57:08.722Z",
+  "startedAt": "2026-10-05T17:00:14.505Z",
   "steps": [
     "launch chromium headless @ 390x844",
-    "goto http://127.0.0.1:5173",
+    "goto https://smart-escape-practice-production.up.railway.app",
     "click \"Load sample building\"",
     "select start = R1",
     "read initial map metrics",
@@ -98,5 +98,5 @@
     }
   ],
   "pass": true,
-  "finishedAt": "2026-10-05T16:57:10.362Z"
+  "finishedAt": "2026-10-05T17:00:17.108Z"
 }

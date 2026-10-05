@@ -1,6 +1,6 @@
 {
   "url": "https://smart-escape-practice-production.up.railway.app",
-  "verifiedAt": "2026-10-05T16:49:00.673Z",
+  "verifiedAt": "2026-10-05T17:00:16.076Z",
   "files": [
     {
       "path": "index.html",
@@ -40,7 +40,7 @@
     },
     {
       "path": "puku2/styles.css",
-      "sha256": "2a5f44f0db5a741d21a1377f5eff4fc05c62b1b1debb1850b638eda20d8b621e"
+      "sha256": "e5687a9c27c9d62003fa5c5b316495286806c94202e64b085efd7e24358b5558"
     }
   ],
   "privateFilesAbsent": [
