@@ -1,0 +1,7 @@
+# Puku 2 — interactive map and presentation
+
+Launch `puku-cli` in this folder, then paste the following prompt:
+
+> Read ../AGENTS.md, ../docs/CONTRACT.md and ../docs/PLAN.md. You are Puku 2. A working baseline exists. Your task is to review and improve map.js and styles.css for the Smart Escape practice challenge. Work only in map.js, styles.css and REPORT.md inside this folder. Preserve renderMap's API and the class names used by ../src/app.js. Focus on legible map labels and costs, selected and blocked states, keyboard interactions, brief hazard/route animations, reduced motion, mobile layouts, and long labels or IDs on unseen datasets. Preserve supplied coordinates with uniform scaling/translation. Do not compute routes or mutate application state. Treat IDs and labels as untrusted text. Test the official baseline and C2 rerouting in the browser, English and Bangla, and narrow screen widths. Coordinate any missing translation keys through REPORT.md; do not modify translations yourself. Run npm run build from the parent folder. Write REPORT.md with changes, verification and remaining issues. Do not touch the engine, shared files, dependencies or Git history. Do not commit or push. This is practice code and must not be represented as an official contest submission.
+
+Start the app from the parent folder with `npm run dev`; it opens at http://127.0.0.1:5173. Use an existing server if one is already running.
