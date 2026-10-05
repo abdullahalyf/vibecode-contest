@@ -1,0 +1,16 @@
+{
+  "name": "smart-escape-practice",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "start": "node scripts/serve.mjs",
+    "test": "node --test puku1/*.test.js",
+    "build": "node scripts/build.mjs",
+    "check:browser": "node scripts/browser-check.mjs",
+    "check:map": "node scripts/map-check.mjs",
+    "check:live": "node scripts/verify-live.mjs"
+  },
+  "engines": { "node": ">=20" }
+}

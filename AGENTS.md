@@ -6,7 +6,7 @@ Use plain HTML, CSS and JavaScript modules. The deployed app is frontend only, u
 
 ## Parallel ownership
 
-- **Puku 1:** edit only `puku1/engine.js`, `puku1/engine.test.js`, and `puku1/REPORT.md`.
+- **Puku 1:** edit only `puku1/engine.js`, `puku1/engine.test.js`, `puku1/REPORT.md`, and the assigned explanation artifact `puku1/JUDGE_GUIDE.md`.
 - **Puku 2:** edit only `puku2/map.js`, `puku2/styles.css`, and `puku2/REPORT.md`.
 - **Codex:** owns `src/`, root files, documentation, sample data, scripts, screenshots and integration.
 - Read `docs/CONTRACT.md` before modifying interfaces. Ask Codex to coordinate a contract change before changing exports or argument shapes.
