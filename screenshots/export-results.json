@@ -1,5 +1,5 @@
 {
-  "url": "http://127.0.0.1:5173",
+  "url": "https://smart-escape-practice-production.up.railway.app",
   "checks": [
     "English PNG export downloads a valid readable-size image",
     "export preserves route and releases its busy state",

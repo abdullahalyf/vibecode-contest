@@ -1,5 +1,5 @@
 {
-  "url": "http://127.0.0.1:5173",
+  "url": "https://smart-escape-practice-production.up.railway.app",
   "checks": [
     "map node Enter/Space toggles retain focus and reroute",
     "map corridor toggles retain focus and correct costs",

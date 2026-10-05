@@ -21,7 +21,7 @@ The static build succeeds and contains exactly ten allowlisted runtime assets. N
 
 Live HTTPS: https://smart-escape-practice-production.up.railway.app
 
-The first deployment passed its original 15 acceptance checks and eight-asset content comparison. This is historical evidence only. Final public verification and release identity are recorded below when the integrated deployment is healthy. docs/DEPLOYMENT_VERIFICATION.json records SHA-256 agreement between the public runtime assets and the local build, plus absent development-only paths.
+The first deployment passed its original 15 acceptance checks and eight-asset content comparison. This is historical evidence only. The integrated release succeeded on Railway as deployment cc9e6432-83c5-4546-b77e-d9958fe00bf8, from source commit 0601c5e3aa5dd2681a3c117a40c0f48aa0e00785. All 51 browser assertions above then passed against the public HTTPS URL. All ten runtime files match the reviewed local build byte-for-byte, and five development-only paths return HTTP 404. Standard npm test passed all 38 assertions and npm run build succeeded. The subsequent evidence-only commit changes documentation and screenshots, with identical deployed app assets. docs/DEPLOYMENT_VERIFICATION.json records SHA-256 agreement between the public runtime assets and the local build, plus absent development-only paths.
 
 ## Practical limits
 

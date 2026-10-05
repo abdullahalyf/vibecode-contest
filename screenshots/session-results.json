@@ -1,5 +1,5 @@
 {
-  "url": "http://127.0.0.1:5173",
+  "url": "https://smart-escape-practice-production.up.railway.app",
   "checks": [
     "absent saved progress gives a clear message",
     "save captures all hazard categories, blocked start, Bangla and mode",
