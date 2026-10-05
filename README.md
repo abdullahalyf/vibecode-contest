@@ -44,7 +44,7 @@ See `docs/PLAN.md`, `docs/CONTRACT.md` and `AGENTS.md` for requirements, interfa
 - English/Bangla controls, errors, statuses and instructions.
 - Keyboard controls, reduced-motion support, responsive layout and brief route transitions.
 
-Optional extensions implemented: keyboard access and reduced-motion support. Alternative routes, PNG export and saved progress are not implemented.
+Optional extensions implemented: keyboard access, reduced-motion support, PNG map export and browser-local saved progress. Use Save progress before leaving, then Restore progress after reopening this site in the same browser. Clear saved progress removes the stored snapshot without changing the current simulation. Alternative routes are not implemented.
 
 ## Published sample checks
 
@@ -60,7 +60,7 @@ Screenshots: [baseline](screenshots/baseline.png), [C2 reroute](screenshots/rero
 
 An optional development-only browser acceptance script is available as `npm run check:browser`. It requires Playwright and installed Chrome; neither is shipped to the live app. Set `SMART_ESCAPE_PLAYWRIGHT` to an existing Playwright module path when using a bundled runtime. Set `SMART_ESCAPE_URL` to test a public deployment rather than the local development server. Actual results are saved in `screenshots/browser-results.json`.
 
-For restricted environments where Node cannot launch test workers, Node 22+ can run `node --test --test-isolation=none puku1/engine.test.js`. This runs the same assertions in the current process; it does not bypass failing tests.
+For restricted environments where Node cannot launch test workers, Node 22+ can run `node --test --test-isolation=none puku1/engine.test.js puku1/session.test.js`. This runs the same assertions in the current process; it does not bypass failing tests. The reviewed version passes 38 engine/storage tests. Additional Chrome checks are available through `check:map`, `check:export`, `check:session` and `check:mobile`; none ship to the deployed app.
 
 ## Deployment
 

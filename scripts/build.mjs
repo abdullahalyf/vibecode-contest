@@ -6,7 +6,7 @@ const output = resolve(root, 'dist');
 if (output !== resolve(root) + sep + 'dist') throw new Error('Unexpected build output path');
 await rm(output, { recursive: true, force: true });
 // Only runtime assets go online. Reports, test files, scripts and docs stay local.
-for (const file of ['index.html', 'favicon.svg', 'src/app.js', 'src/i18n.js', 'data/building.json', 'puku1/engine.js', 'puku2/map.js', 'puku2/styles.css']) {
+for (const file of ['index.html', 'favicon.svg', 'src/app.js', 'src/i18n.js', 'src/export.js', 'data/building.json', 'puku1/engine.js', 'puku1/session.js', 'puku2/map.js', 'puku2/styles.css']) {
   const destination = resolve(output, file);
   await mkdir(dirname(destination), { recursive: true });
   await cp(resolve(root, file), destination);

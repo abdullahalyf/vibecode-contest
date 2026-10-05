@@ -1,0 +1,24 @@
+{
+  "url": "http://127.0.0.1:5173",
+  "checks": [
+    "sample import and R1 baseline cost 7",
+    "C2 reroute cost 11 and matching highlighted corridors",
+    "both exits closed removes stale route",
+    "R2 baseline cost 7",
+    "blocked selected start remains selected with distinct message",
+    "malformed JSON preserves building, start, hazards and route",
+    "invalid schema preserves previous simulation",
+    "reset restores all non-empty original hazard arrays and retains blocked start",
+    "Bangla blocked-start, no-route and import error messages",
+    "practice footer is localized in Bangla",
+    "dismissed error restores focus to a persistent import control",
+    "390px Bangla layout has no horizontal page overflow",
+    "untrusted labels rendered as text, not HTML",
+    "repeated keyboard condition toggles preserve focus",
+    "same local file can be imported repeatedly",
+    "reduced motion disables route animation",
+    "no uncaught browser exceptions"
+  ],
+  "count": 17,
+  "errors": []
+}

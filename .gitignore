@@ -7,3 +7,4 @@ dist/
 *.tmp
 puku2/patch.cjs
 .DS_Store
+/smart-escape-map*.png

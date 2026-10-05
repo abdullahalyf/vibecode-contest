@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { readFile, writeFile } from 'node:fs/promises';
 const base = process.env.SMART_ESCAPE_URL || 'https://smart-escape-practice-production.up.railway.app';
-const files = ['index.html', 'favicon.svg', 'src/app.js', 'src/i18n.js', 'data/building.json', 'puku1/engine.js', 'puku2/map.js', 'puku2/styles.css'];
+const files = ['index.html', 'favicon.svg', 'src/app.js', 'src/i18n.js', 'src/export.js', 'data/building.json', 'puku1/engine.js', 'puku1/session.js', 'puku2/map.js', 'puku2/styles.css'];
 const sha256 = data => createHash('sha256').update(data).digest('hex');
 const verified = [];
 for (const path of files) {

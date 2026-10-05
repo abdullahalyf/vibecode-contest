@@ -1,0 +1,102 @@
+{
+  "url": "http://127.0.0.1:5173",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "startedAt": "2026-10-05T16:46:06.898Z",
+  "steps": [
+    "launch chromium headless @ 390x844",
+    "goto http://127.0.0.1:5173",
+    "click \"Load sample building\"",
+    "select start = R1",
+    "read initial map metrics",
+    "scroll map right by 200px",
+    "keyboard-focus R1 via Tab",
+    "switch language to Bangla",
+    "re-check scroll metrics after language switch"
+  ],
+  "errors": [],
+  "pageErrors": [],
+  "assertions": [
+    {
+      "name": "start-select discovered",
+      "optionsCount": 7,
+      "pass": true
+    },
+    {
+      "name": "svg min-width >= 560",
+      "svgMinWidth": 880,
+      "svgComputedMinWidth": "880px",
+      "svgComputedWidth": "880px",
+      "pass": true
+    },
+    {
+      "name": "map.scrollWidth > map.clientWidth",
+      "scrollWidth": 888,
+      "clientWidth": 356,
+      "pass": true
+    },
+    {
+      "name": "document has no horizontal overflow",
+      "bodyScrollWidth": 390,
+      "viewportInnerWidth": 390,
+      "bodyClientWidth": 390,
+      "pass": true
+    },
+    {
+      "name": "map.scrollLeft can become positive",
+      "scrollLeft": 200,
+      "pass": true
+    },
+    {
+      "name": "document still has no horizontal overflow after scrolling",
+      "bodyScrollWidth": 390,
+      "viewportInnerWidth": 390,
+      "pass": true
+    },
+    {
+      "name": "R1 reached by Tab and is selected-start",
+      "dataFocus": "map-node:R1",
+      "pass": true
+    },
+    {
+      "name": "R1 focused shape fill is pale rgb(255,248,214)",
+      "shapeFill": "rgb(255, 248, 214)",
+      "pass": true
+    },
+    {
+      "name": "R1 focused label fill is dark rgb(20,43,40)",
+      "idFill": "rgb(20, 43, 40)",
+      "pass": true
+    },
+    {
+      "name": "R1 focused label is NOT white",
+      "idFill": "rgb(20, 43, 40)",
+      "pass": true
+    },
+    {
+      "name": "language switched (Bangla active)",
+      "lang": "bn",
+      "pass": true
+    },
+    {
+      "name": "after Bangla: svg min-width >= 560",
+      "svgMinWidth": 880,
+      "pass": true
+    },
+    {
+      "name": "after Bangla: map.scrollWidth > map.clientWidth",
+      "scrollWidth": 888,
+      "clientWidth": 356,
+      "pass": true
+    },
+    {
+      "name": "after Bangla: map.scrollLeft can become positive",
+      "scrollLeft": 200,
+      "pass": true
+    }
+  ],
+  "pass": true,
+  "finishedAt": "2026-10-05T16:46:08.244Z"
+}

@@ -1,4 +1,6 @@
 const en = {
+  saveProgress: 'Save progress', restoreProgress: 'Restore progress', clearProgress: 'Clear saved progress', sessionLocal: 'Saved progress stays in this browser on this device.', sessionSaved: 'Progress saved. You can restore it after reopening this page.', sessionRestored: 'Saved progress restored.', sessionCleared: 'Saved progress cleared.', sessionAbsent: 'There is no saved progress in this browser.', sessionErrorHeading: 'Could not access saved progress', sessionError: 'Saved progress is invalid or browser storage is unavailable. Your current building is unchanged.',
+  exportPng: 'Download map PNG', exporting: 'Preparing PNG…', exportDone: 'Map PNG download started.', exportErrorHeading: 'Could not export map', exportError: 'The map could not be saved as a PNG. Please try again.',
   brand: 'Smart Escape', practiceFooter: 'SMART ESCAPE / PRACTICE', tagline: 'EVACUATION ROUTE SIMULATOR', language: 'বাংলা', import: 'Import building', sample: 'Load sample', reset: 'Reset conditions',
   eyebrow: 'SIMULATION WORKSPACE', title: 'A clear path. Even when things change.', subtitle: 'Choose a starting point. Change the conditions. See your route adapt.',
   building: 'Building', locations: 'locations', corridors: 'corridors', openExits: 'open exits', map: 'Interactive building map',
@@ -23,6 +25,8 @@ const en = {
   explain: 'Routes use corridor costs, not map distances. When costs tie, exit IDs and then node sequences decide the route.'
 };
 const bn = {
+  saveProgress: 'অগ্রগতি সংরক্ষণ', restoreProgress: 'অগ্রগতি ফিরিয়ে আনুন', clearProgress: 'সংরক্ষিত অগ্রগতি মুছুন', sessionLocal: 'সংরক্ষিত অগ্রগতি এই ডিভাইসের এই ব্রাউজারেই থাকে।', sessionSaved: 'অগ্রগতি সংরক্ষিত হয়েছে। পৃষ্ঠা আবার খুলে ফিরিয়ে আনতে পারবেন।', sessionRestored: 'সংরক্ষিত অগ্রগতি ফিরে এসেছে।', sessionCleared: 'সংরক্ষিত অগ্রগতি মুছে ফেলা হয়েছে।', sessionAbsent: 'এই ব্রাউজারে কোনো অগ্রগতি সংরক্ষিত নেই।', sessionErrorHeading: 'সংরক্ষিত অগ্রগতি ব্যবহার করা যায়নি', sessionError: 'সংরক্ষিত অগ্রগতি সঠিক নয় অথবা ব্রাউজারের সংরক্ষণ সুবিধা অনুপলব্ধ। আপনার বর্তমান ভবন অপরিবর্তিত আছে।',
+  exportPng: 'মানচিত্রের PNG ডাউনলোড', exporting: 'PNG তৈরি হচ্ছে…', exportDone: 'মানচিত্রের PNG ডাউনলোড শুরু হয়েছে।', exportErrorHeading: 'মানচিত্র রপ্তানি করা যায়নি', exportError: 'মানচিত্রটি PNG হিসেবে সংরক্ষণ করা যায়নি। আবার চেষ্টা করুন।',
   brand: 'স্মার্ট এস্কেপ', practiceFooter: 'স্মার্ট এস্কেপ / অনুশীলন', tagline: 'নিরাপদ প্রস্থান পথের সিমুলেটর', language: 'English', import: 'ভবন আমদানি', sample: 'নমুনা খুলুন', reset: 'অবস্থা পুনরায় সেট',
   eyebrow: 'সিমুলেশন কর্মক্ষেত্র', title: 'পরিস্থিতি বদলালেও পথ খুঁজুন।', subtitle: 'শুরুর স্থান বাছুন। বাধা পরিবর্তন করুন। নতুন পথ দেখুন।',
   building: 'ভবন', locations: 'স্থান', corridors: 'করিডর', openExits: 'খোলা প্রস্থান', map: 'ভবনের ইন্টার‌্যাক্টিভ মানচিত্র',

@@ -54,5 +54,5 @@ Commit at least once every 30 minutes and at least three times total. Every mess
 
 - University registration number: not supplied.
 - Official contest's actual problem: not yet released; Smart Escape is the mock exercise.
-- Hosting provider and public live URL: not configured.
+- Hosting: Railway static Caddy service at https://smart-escape-practice-production.up.railway.app.
 - Puku CLI sessions: user launches manually with `puku-cli`.

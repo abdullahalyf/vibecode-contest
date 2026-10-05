@@ -1,0 +1,13 @@
+{
+  "url": "http://127.0.0.1:5173",
+  "checks": [
+    "map node Enter/Space toggles retain focus and reroute",
+    "map corridor toggles retain focus and correct costs",
+    "map exit toggles retain focus and restore destination",
+    "all corridor costs remain visible",
+    "finite extreme coordinates produce a finite map and correct route",
+    "map changes introduce no uncaught browser exceptions"
+  ],
+  "count": 6,
+  "errors": []
+}

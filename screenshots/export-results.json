@@ -1,0 +1,14 @@
+{
+  "url": "http://127.0.0.1:5173",
+  "checks": [
+    "English PNG export downloads a valid readable-size image",
+    "export preserves route and releases its busy state",
+    "Bangla export control downloads successfully",
+    "additional export control fits the mobile Bangla layout",
+    "export introduces no uncaught browser exceptions"
+  ],
+  "count": 5,
+  "pngWidth": 2784,
+  "pngHeight": 1380,
+  "errors": []
+}

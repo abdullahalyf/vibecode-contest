@@ -80,7 +80,7 @@ export function findRoute(building, state, startId) {
   }
   const best = new Map([[startId, { cost: 0, nodeIds: [startId], edgeIds: [] }]]);
   const settled = new Set();
-  // At most 60 nodes: a simple O(V² + E) Dijkstra is small and easy to explain.
+  // At most 60 nodes: sort candidates by cost and full path on each iteration.
   while (true) {
     const candidate = [...best.entries()].filter(([id]) => !settled.has(id)).sort((a, b) =>
       a[1].cost - b[1].cost || comparePaths(a[1].nodeIds, b[1].nodeIds))[0];

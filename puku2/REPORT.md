@@ -143,10 +143,145 @@ re-test by Desktop Codex should show finite values for
 `±Number.MAX_VALUE` inputs, with the same focus attributes and visible
 focus styling as Round 3.
 
+### Round 3b — focused selected-start text contrast
+
+A follow-up defect: when the selected start (`.location.is-start`) received
+keyboard focus, the default focus-visible rule applied the pale `#fff8d6`
+fill to `.node-shape` while the pre-existing `.location.is-start .node-id`
+rule continued to paint the label white, producing white text on a pale
+background. Correct the selected-start focused text using a higher-specificity
+selector.
+
+Added to `styles.css` directly after the focus-visible block:
+
+```css
+/* Selected start + keyboard focus: the default `.is-start .node-id` rule
+  paints the label white, which would clash with the pale focus fill on the
+  shape. Outrank those rules so the focused start keeps the warm pale fill
+  AND the label stays dark. The `:focus-visible` triple-class selector beats
+  both `.location:focus-visible .node-shape` and `.location.is-start .node-id`. */
+.location.is-start:focus-visible .node-shape { fill:#fff8d6; stroke:var(--ink); stroke-width:4; }
+.location.is-start:focus-visible .node-id { fill:var(--ink); }
+```
+
+- `.location.is-start:focus-visible .node-shape` has specificity (0,0,3,1)
+  and outranks both `.location:focus-visible .node-shape` and
+  `.location.is-start .node-shape` (both 0,0,2,1), so the pale focus fill is
+  restored for the focused start instead of the dark ink start fill. The
+  focused-start stroke stays ink-coloured and 4 px wide, keeping the focus
+  ring visible against the dark start identity.
+- `.location.is-start:focus-visible .node-id` (0,0,3,1) outranks
+  `.location.is-start .node-id` (0,0,2,1), so the label falls back to the
+  default dark ink. Result: dark ink text on the pale `#fff8d6` shape, with
+  adequate contrast for both themes.
+- No motion, animation, or transition is introduced. The existing
+  `prefers-reduced-motion` block continues to strip motion globally.
+- No change to `map.js`, contracts, engine, tests, scripts, Git, or
+  deployment.
+
+Verification should confirm:
+- Default start (not focused): dark ink fill, white label — unchanged.
+- Default node (not start, focused): white fill, dark label — unchanged.
+- Selected start (focused): pale `#fff8d6` fill, dark ink label, ink stroke
+  at 4 px — fixed.
+
 ### Open coordination notes
 
 - No translation keys added; nothing for `src/i18n.js` to do.
 - No changes to `src/app.js` are required to consume `data-focus`; the root
   app already consumes that identifier shape.
 - Puku 1 engine tests remain untouched (last round shipped 19/19 passing).
+
+## Round 4 — mobile map readability
+
+The 680-unit SVG was shrinking to roughly 360 px on a 390 px viewport,
+compressing node IDs, labels and cost badges below a readable size. The
+existing `.map-canvas` already has `overflow:auto`, so the fix is to
+give the SVG a minimum width inside that scroll container rather than
+letting it shrink to the viewport.
+
+### Change (styles.css only)
+
+Inside `@media (max-width:720px)`:
+
+- `body { overflow-x:hidden; }` — guarantees the page itself never
+  scrolls horizontally, so a wider SVG header can't push the workspace
+  around.
+- `.map-canvas` — switched `padding` to `8px 0 8px 8px` and
+  `justify-content:flex-start` so the SVG hugs the left edge of the
+  scroll container and the user lands at the start of the map on first
+  paint. Added `-webkit-overflow-scrolling:touch` for momentum on iOS.
+- `.map-canvas svg` — `width:auto; min-width:560px; max-width:none;` so
+  the SVG keeps its native size (no label shrink) and scrolls
+  natively. The desktop rule `width:100%` is overridden only inside this
+  media query, so the workspace-grid, conditions grid and desktop
+  layouts are untouched.
+
+The 560 px minimum matches the typical viewport where labels become
+unreadable (around 390 px). On wider mobile devices (e.g. iPad portrait
+at 768 px) the `<=720px` rule does not apply and the SVG fills the
+panel as before.
+
+### Preserved
+
+- Every cost badge, hazard ×, node label and route highlight is still
+  drawn by the renderer; no labels hidden, no `visibility:hidden` /
+  `opacity:0` / `display:none` introduced.
+- `:focus-visible` styling on `.location` and `.corridor` (Round 3) is
+  unchanged; keyboard tabbing through every SVG group still works.
+- `prefers-reduced-motion:reduce` still strips transitions and
+  animations globally.
+- Desktop layout, the 950 px breakpoint, the workspace grid, the
+  conditions grid, the legend, the toolbar, the route panel, the footer,
+  the empty state and the error banner — unchanged.
+
+### Actual checks
+
+- Confirmed only `styles.css` was modified. `map.js`, `src/app.js`,
+  `package.json`, `data/building.json` are byte-identical to Round 3.
+- Diff size: one media block (`@media (max-width:720px)`) expanded
+  onto multiple lines, three new rules (`body`, `.map-canvas`,
+  `.map-canvas svg`) and a comment added; nothing else touched.
+- Parser check by reading the file: `@media (max-width:950px)` and
+  `@media (prefers-reduced-motion:reduce)` rules are intact at lines
+  137 and 148, the new block lives between them. No stray braces, no
+  dangling selectors.
+- No browser test was run by Puku 2 in this round (same as Round 3).
+  Expected behaviour: on a 390 px viewport the map panel offers
+  horizontal scrolling via `.map-canvas`'s `overflow:auto`; the
+  workspace, conditions grid, route panel, header and footer never
+  overflow horizontally; native touch scrolling pans the SVG on
+  touch devices.
+- Engine tests still 19/19 (Puku 1 untouched).
 - No git mutations; no dependency or package changes.
+
+### Round 4b — mobile-check.mjs (development-only)
+
+To back the Round 4 styles.css change with a real browser check, Puku 2
+added a single new file: `puku2/mobile-check.mjs`. It is structured after
+`../scripts/map-check.mjs` (Chromium headless, `SMART_ESCAPE_URL` env,
+pageerror/console capture, screenshots + JSON output) and runs only on
+Desktop — Puku 2 does not execute it.
+
+The script uses Playwright via `process.env.SMART_ESCAPE_PLAYWRIGHT`
+(falling back to `'playwright'`) at a 390×844 mobile viewport. It loads
+the sample data set, picks `R1` from `.start-select`, then asserts:
+
+- `svg.clientWidth >= 560` (the new min-width on `.map-canvas svg`)
+- `.map-canvas.scrollWidth > .map-canvas.clientWidth` (native scroll exists)
+- `document.documentElement.scrollWidth <= window.innerWidth` (page never
+  overflows horizontally)
+- After setting `scrollLeft = 200`, `.map-canvas.scrollLeft > 0` (native
+  horizontal scrolling actually responds)
+- After keyboard-tabbing to the `.location[data-focus="map-node:R1"]`
+  group, the focused `.node-shape` fill matches `rgb(255, 248, 214)` and
+  the `.node-id` label fill matches `rgb(20, 43, 40)` (dark ink on pale),
+  and is explicitly not `rgb(255, 255, 255)` — guarding the Round 3b
+  contrast fix on a 390 px viewport
+- After switching the language toggle to Bangla, the same SVG
+  min-width and `scrollLeft > 0` invariants still hold
+
+It writes `screenshots/mobile-initial.png`, `screenshots/mobile-final.png`
+and `screenshots/mobile-results.json`. It does not change `styles.css`,
+`map.js`, `src/app.js`, contracts, i18n, `package.json`, Git state or any
+file outside `puku2/`.

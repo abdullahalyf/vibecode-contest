@@ -1,0 +1,16 @@
+{
+  "url": "http://127.0.0.1:5173",
+  "checks": [
+    "absent saved progress gives a clear message",
+    "save captures all hazard categories, blocked start, Bangla and mode",
+    "reload and restore recover the validated session without losing blocked start",
+    "reset after restore preserves all original imported hazard arrays",
+    "corrupt saved progress produces Bangla error and preserves current simulation",
+    "invalid saved hazard IDs are rejected before any current state changes",
+    "clear removes only the stored snapshot and retains current simulation",
+    "unavailable storage fails safely without changing current simulation",
+    "Bangla saved progress controls fit mobile and introduce no browser exceptions"
+  ],
+  "count": 9,
+  "errors": []
+}

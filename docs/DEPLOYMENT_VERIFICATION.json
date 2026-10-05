@@ -1,0 +1,45 @@
+{
+  "url": "https://smart-escape-practice-production.up.railway.app",
+  "verifiedAt": "2026-10-05T16:11:10.498Z",
+  "files": [
+    {
+      "path": "index.html",
+      "sha256": "556da6213c6894ddd39bf4f213850305c17b556b0fb52b7c8729bfdd29dbeaa5"
+    },
+    {
+      "path": "favicon.svg",
+      "sha256": "146f4a97f905b69a2b53e521fb42d2b03fb06c781b37c2a76b877c817447facc"
+    },
+    {
+      "path": "src/app.js",
+      "sha256": "1f316a3df1b464693de5258032fe507fa4b238ea2ebb0871e979d7277999797a"
+    },
+    {
+      "path": "src/i18n.js",
+      "sha256": "867276bae219cf03626b8409d31ebfa1b03e8b376b23d3c21bc0f1713d5de7aa"
+    },
+    {
+      "path": "data/building.json",
+      "sha256": "4fdb6404b8fe158576c8fac2336cbd4d6495fbc3fd460e463abd46d90b6fda31"
+    },
+    {
+      "path": "puku1/engine.js",
+      "sha256": "275aaa8c69d7d78a9111d8c7da1e77ba26f861514c51a6b6bb9e5305b2622ded"
+    },
+    {
+      "path": "puku2/map.js",
+      "sha256": "b30f5c5ac81aae9a5e9045bb1ba985dc79c05e0d6a29be13a14c05626721c4db"
+    },
+    {
+      "path": "puku2/styles.css",
+      "sha256": "d732813ccb4a3d33259bc4508f0d151c54488cee19a146cd40c138e59541e352"
+    }
+  ],
+  "privateFilesAbsent": [
+    "README.md",
+    "package.json",
+    "scripts/serve.mjs",
+    ".git/config",
+    "puku1/engine.test.js"
+  ]
+}

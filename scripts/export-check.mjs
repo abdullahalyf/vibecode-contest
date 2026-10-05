@@ -1,0 +1,37 @@
+import { createRequire } from 'node:module';
+import { readFile, writeFile } from 'node:fs/promises';
+import assert from 'node:assert/strict';
+const require = createRequire(import.meta.url);
+const { chromium } = require(process.env.SMART_ESCAPE_PLAYWRIGHT || 'playwright');
+const url = process.env.SMART_ESCAPE_URL || 'http://127.0.0.1:5173';
+const browser = await chromium.launch({ channel: 'chrome', headless: true });
+const page = await browser.newPage({ acceptDownloads: true, viewport: { width: 1440, height: 1050 } });
+const errors = [], checks = [];
+page.on('pageerror', error => errors.push(error.message));
+const pass = name => { checks.push(name); console.log(`PASS ${name}`); };
+try {
+  await page.goto(url); await page.getByRole('button', { name: 'Load sample', exact: true }).click();
+  await page.locator('#start-select').selectOption('R1');
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download map PNG', exact: true }).click();
+  const download = await downloadPromise; assert.equal(await download.failure(), null);
+  await download.saveAs('screenshots/exported-map.png');
+  const png = await readFile('screenshots/exported-map.png');
+  assert.deepEqual([...png.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
+  const width = png.readUInt32BE(16), height = png.readUInt32BE(20);
+  assert.ok(width >= 880 && width <= 4096); assert.ok(height >= 300 && height <= 4096);
+  pass('English PNG export downloads a valid readable-size image');
+  await page.waitForFunction(() => document.querySelector('[data-focus="export-map"]')?.getAttribute('aria-busy') === 'false');
+  assert.equal(await page.locator('.route-cost strong').innerText(), '7'); pass('export preserves route and releases its busy state');
+  await page.locator('[data-focus="language"]').click();
+  assert.equal(await page.locator('[data-focus="export-map"]').innerText(), 'মানচিত্রের PNG ডাউনলোড');
+  const banglaDownloadPromise = page.waitForEvent('download');
+  await page.locator('[data-focus="export-map"]').click();
+  const bn = await banglaDownloadPromise; assert.equal(await bn.failure(), null); pass('Bangla export control downloads successfully');
+  await page.waitForFunction(() => document.querySelector('[data-focus="export-map"]')?.getAttribute('aria-busy') === 'false');
+  await page.setViewportSize({ width: 390, height: 844 });
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false); pass('additional export control fits the mobile Bangla layout');
+  assert.deepEqual(errors, []); pass('export introduces no uncaught browser exceptions');
+  await writeFile('screenshots/export-results.json', JSON.stringify({ url, checks, count: checks.length, pngWidth: width, pngHeight: height, errors }, null, 2));
+  console.log(`PNG checks passed: ${checks.length}`);
+} finally { await browser.close(); }

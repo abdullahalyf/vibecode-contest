@@ -1,9 +1,12 @@
 import { validateBuilding, createState, findRoute } from '../puku1/engine.js';
 import { renderMap } from '../puku2/map.js';
 import { translator } from './i18n.js';
+import { downloadMapPng } from './export.js';
+import { saveSession, loadSession, clearSession } from '../puku1/session.js';
 
 let language = 'en', building = null, state = null, startId = '', mode = 'select', errorCode = '', notice = '', importVersion = 0;
 let route = { status: 'select_start' };
+let exporting = false;
 const app = document.querySelector('#app');
 const icon = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 17V7h7v10M11 12h9m-4-4 4 4-4 4M4 17H2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 function make(tag, className, text) {
@@ -59,11 +62,38 @@ function importFile() {
     }
   }); input.click();
 }
+async function exportMap() {
+  if (exporting) return;
+  const svg = app.querySelector('.map-canvas svg');
+  exporting = true;
+  const control = app.querySelector('[data-focus="export-map"]');
+  if (control) { control.textContent = translator(language)('exporting'); control.setAttribute('aria-busy', 'true'); }
+  try { await downloadMapPng(svg); if (errorCode === 'exportError') errorCode = ''; notice = 'exportDone'; }
+  catch { errorCode = 'exportError'; notice = ''; }
+  finally { exporting = false; render(); }
+}
+function sessionAction(action) {
+  try {
+    if (action === 'save') {
+      saveSession({ building, state, startId, language, mode }); notice = 'sessionSaved';
+    } else if (action === 'restore') {
+      const saved = loadSession();
+      if (!saved) { notice = 'sessionAbsent'; errorCode = ''; render(); return; }
+      // The storage module validates the entire snapshot before current state changes.
+      ++importVersion;
+      ({ building, state, language, mode } = saved); startId = saved.startId || '';
+      notice = 'sessionRestored';
+    } else { clearSession(); notice = 'sessionCleared'; }
+    errorCode = ''; update();
+  } catch { errorCode = 'sessionError'; notice = ''; render(); }
+}
 function render() {
   // Restore keyboard focus after state changes, using stable element identities.
   const focusId = document.activeElement?.dataset?.focus;
   const activeSvg = document.activeElement?.closest?.('svg') ? document.activeElement.getAttribute('aria-label') : null;
   const oldDetails = [...app.querySelectorAll('details')].map(d => d.open);
+  const oldMap = app.querySelector('.map-canvas');
+  const mapScroll = { left: oldMap?.scrollLeft || 0, top: oldMap?.scrollTop || 0 };
   const t = translator(language); document.documentElement.lang = language;
   document.title = `${t('brand')} — ${t('tagline')}`;
   app.replaceChildren();
@@ -78,7 +108,7 @@ function render() {
   const intro = make('div', 'intro'); intro.append(make('p', 'eyebrow', t('eyebrow')), make('h1', '', t('title')), make('p', 'subtitle', t('subtitle'))); main.append(intro);
   if (errorCode) {
     const error = make('div', 'error-banner'); error.setAttribute('role', 'alert');
-    error.append(make('strong', '', t('errorHeading')), make('span', '', t(errorCode)), button('×', () => { errorCode = ''; render(); }, 'dismiss', false, 'dismiss-error'));
+    error.append(make('strong', '', t(errorCode === 'exportError' ? 'exportErrorHeading' : errorCode === 'sessionError' ? 'sessionErrorHeading' : 'errorHeading')), make('span', '', t(errorCode)), button('×', () => { errorCode = ''; render(); }, 'dismiss', false, 'dismiss-error'));
     error.lastChild.setAttribute('aria-label', t('dismiss')); main.append(error);
   }
   if (!building) {
@@ -92,7 +122,9 @@ function render() {
       const stat = make('div'); stat.append(make('strong', '', value), make('span', '', t(key))); counts.append(stat);
     }
     const reset = button(t('reset'), () => { state = createState(building); notice = 'resetDone'; errorCode = ''; update(); }, 'button reset-button'); reset.dataset.focus = 'reset';
-    buildingBar.append(name, counts, reset); main.append(buildingBar);
+    const exportButton = button(t(exporting ? 'exporting' : 'exportPng'), exportMap, 'button', false, 'export-map');
+    exportButton.setAttribute('aria-busy', exporting);
+    buildingBar.append(name, counts, reset, exportButton); main.append(buildingBar);
     const grid = make('div', 'workspace-grid'), mapPanel = make('section', 'map-panel');
     const toolbar = make('div', 'map-toolbar'), tabs = make('div', 'mode-tabs');
     for (const [value, label] of [['select', 'selectMode'], ['hazard', 'hazardMode']]) {
@@ -141,6 +173,11 @@ function render() {
     }
     conditions.append(conditionGrid); main.append(conditions);
   }
+  const sessionControls = make('div', 'header-actions');
+  sessionControls.style.flexWrap = 'wrap'; sessionControls.style.margin = '18px 0';
+  sessionControls.append(button(t('saveProgress'), () => sessionAction('save'), 'button', !building, 'save-session'), button(t('restoreProgress'), () => sessionAction('restore'), 'button', false, 'restore-session'), button(t('clearProgress'), () => sessionAction('clear'), 'button', false, 'clear-session'));
+  main.append(sessionControls, make('p', 'routing-note', t('sessionLocal')));
+  if (notice.startsWith('session')) { const feedback = make('p', 'status-description', t(notice)); feedback.setAttribute('role', 'status'); main.append(feedback); }
   const noticeArea = make('div', 'sr-only', notice ? t(notice) : ''); noticeArea.setAttribute('role', 'status'); main.append(noticeArea);
   app.append(main); const footer = make('footer', 'footer'); footer.append(make('span', '', t('simulation')), make('span', 'footer-name', t('practiceFooter'))); app.append(footer);
   if (focusId) {
@@ -151,5 +188,7 @@ function render() {
     target?.focus({ preventScroll: true });
   }
   else if (activeSvg) [...app.querySelectorAll('svg [role="button"]')].find(el => el.getAttribute('aria-label') === activeSvg)?.focus({ preventScroll: true });
+  const nextMap = app.querySelector('.map-canvas');
+  if (nextMap) { nextMap.scrollLeft = mapScroll.left; nextMap.scrollTop = mapScroll.top; }
 }
 render();

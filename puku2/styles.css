@@ -13,6 +13,13 @@ button,select { transition:background-color .16s,color .16s,box-shadow .16s; }
   already suppressed globally, so the focused state has no motion. */
 .location:focus-visible { outline:none; }
 .location:focus-visible .node-shape { stroke:var(--ink); stroke-width:4; fill:#fff8d6; }
+/* Selected start + keyboard focus: the default `.is-start .node-id` rule
+  paints the label white, which would clash with the pale focus fill on the
+  shape. Outrank those rules so the focused start keeps the warm pale fill
+  AND the label stays dark. The `:focus-visible` triple-class selector beats
+  both `.location:focus-visible .node-shape` and `.location.is-start .node-id`. */
+.location.is-start:focus-visible .node-shape { fill:#fff8d6; stroke:var(--ink); stroke-width:4; }
+.location.is-start:focus-visible .node-id { fill:var(--ink); }
 .corridor:focus-visible { outline:none; }
 .corridor:focus-visible .corridor-line { stroke:#b67d20; stroke-width:8; stroke-linecap:round; }
 .site-header { min-height:92px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; padding:20px max(28px,calc((100vw - 1280px)/2)); gap:24px; background:#fbfcf8; }
@@ -128,5 +135,14 @@ h1 { margin:0; font-size:clamp(25px,3.2vw,39px); font-weight:600; line-height:1.
 .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
 @keyframes route-appear { from { opacity:.5; } to { opacity:1; } }
 @media (max-width:950px) { .local-note { display:none; } .building-stats { gap:16px; } .workspace-grid { grid-template-columns:minmax(0,1fr) 260px; } .conditions-grid { gap:15px; } }
-@media (max-width:720px) { .site-header { padding:16px; gap:10px; } .brand-subtitle { display:none; } .brand strong { font-size:17px; } .brand-mark { width:36px; height:36px; border-radius:8px; } .brand-mark svg { width:24px; } .header-actions { gap:4px; } .header-actions .button { padding:9px; font-size:11px; } .workspace { padding:28px 16px; } h1 { letter-spacing:-.7px; } .building-bar { flex-wrap:wrap; gap:18px; } .building-bar>div:first-child { flex-basis:100%; } .building-stats { flex:1; gap:21px; } .building-stats span { font-size:10px; } .reset-button { font-size:11px; padding:9px; margin-left:0; } .workspace-grid { grid-template-columns:1fr; } .route-panel { border-left:0; border-top:1px solid var(--line); } .map-canvas { min-height:260px; padding:0; } .map-canvas svg { min-height:240px; } .map-toolbar { padding:13px; } .map-legend { gap:13px; } .conditions-header { display:block; } .conditions-grid { grid-template-columns:1fr; gap:10px; } .footer { padding:18px 16px; display:block; } .footer-name { display:block; margin-top:10px; } }
+@media (max-width:720px) {
+  /* Mobile map readability: the 680-unit SVG would otherwise compress to
+    ~360px on a 390px screen, shrinking labels and cost badges below a
+    readable size. The .map-canvas container already has overflow:auto, so
+    pinning a minimum width on the SVG keeps labels and costs legible and
+    lets the user pan horizontally with native scrolling. The page itself
+    gets overflow-x:hidden so this never pushes the rest of the page
+    around. */
+  body { overflow-x:hidden; }
+  .site-header { padding:16px; gap:10px; } .brand-subtitle { display:none; } .brand strong { font-size:17px; } .brand-mark { width:36px; height:36px; border-radius:8px; } .brand-mark svg { width:24px; } .header-actions { gap:4px; } .header-actions .button { padding:9px; font-size:11px; } .workspace { padding:28px 16px; } h1 { letter-spacing:-.7px; } .building-bar { flex-wrap:wrap; gap:18px; } .building-bar>div:first-child { flex-basis:100%; } .building-stats { flex:1; gap:21px; } .building-stats span { font-size:10px; } .reset-button { font-size:11px; padding:9px; margin-left:0; } .workspace-grid { grid-template-columns:1fr; } .route-panel { border-left:0; border-top:1px solid var(--line); } .map-canvas { min-height:260px; padding:8px 0 8px 8px; justify-content:flex-start; -webkit-overflow-scrolling:touch; } .map-canvas svg { min-height:240px; width:880px; min-width:880px; max-width:none; max-height:none; height:auto; } .map-toolbar { padding:13px; } .map-legend { gap:13px; } .conditions-header { display:block; } .conditions-grid { grid-template-columns:1fr; gap:10px; } .footer { padding:18px 16px; display:block; } .footer-name { display:block; margin-top:10px; } }
 @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; } }

@@ -137,3 +137,159 @@ These don't block this round but are worth resolving before the next:
 Implementation complete. All tests pass. No engine changes. No files
 outside `puku1/engine.test.js` and `puku1/REPORT.md` were touched.
 No git mutations.
+
+---
+
+# 8. `puku1/session.js` — saved-progress API
+
+A new module, `puku1/session.js`, ships browser-local saved progress.
+It is consumed by Codex's integration; the engine does not depend on it.
+
+## 8.1 Storage
+
+- One versioned key: `puku1:smart-escape:session:v1`.
+- Backend: `window.localStorage`. If `localStorage` is not exposed or
+  throws on access, every API call throws `SessionError` with
+  `code: 'sessionError'`.
+
+## 8.2 Exports
+
+```js
+import {
+  saveSession,    // (snapshot) => void, throws SessionError(code='sessionError')
+  loadSession,    // () => snapshot, throws SessionError(code='sessionError')
+  clearSession,   // () => void, throws SessionError(code='sessionError')
+} from './session.js';
+
+// Also exportable for matching without an extra engine import:
+//   SESSION_ERROR_CODE === 'sessionError'
+```
+
+`SessionError` is a subclass with `.name = 'SessionError'` and
+`.code = 'sessionError'`. Callers should match on `e.code === 'sessionError'`.
+
+## 8.3 Snapshot shape
+
+```ts
+type Mode = 'select' | 'hazard';
+
+interface Snapshot {
+  version: 1;
+  building: object;          // original pre-validation building
+  state: {
+    blocked_nodes: string[];
+    blocked_edges: string[];
+    closed_exits: string[];
+  };
+  startId: string | null;
+  language: string;          // defaults to 'en' when missing or non-string
+  mode: Mode;                // anything other than 'hazard' -> 'select'
+}
+```
+
+## 8.4 `saveSession(snapshot)`
+
+Pre-validates `snapshot.building` against the engine before persisting;
+any `ValidationError` is converted to `SessionError('invalid building: <code>')`.
+
+Writes a JSON payload containing:
+
+- `version: 1`
+- a deep clone of `snapshot.building` (via `structuredClone` with a JSON
+  fallback)
+- a normalized copy of the three hazard arrays (deduped, fresh array
+  identities)
+- `startId`, `language`, `mode` (each defaulted if missing or wrong type).
+
+Throws `SessionError('sessionError')` if:
+
+- `snapshot` / `snapshot.building` / `snapshot.state` are missing
+- the building fails validation
+- JSON serialization throws (circular refs)
+- `localStorage.setItem` throws (quota exceeded, blocked by browser)
+
+## 8.5 `loadSession()`
+
+Reads the key, parses JSON, validates:
+
+- `parsed.version === 1` (otherwise `SessionError('unsupported snapshot version')`)
+- `parsed.building` and `parsed.state` are plain objects
+
+Re-runs `validateBuilding(parsed.building)` and returns:
+
+```js
+{
+  version: 1,
+  building,           // freshly-validated; initial_state arrays are
+                      // brand-new (validateBuilding dedupes each one
+                      // via `new Set(ids)`)
+  state,              // three fresh hazard arrays, NOT aliased to
+                      // building.initial_state
+  startId,            // string or null
+  language,           // string ('en' default)
+  mode                // 'select' | 'hazard'
+}
+```
+
+Throws `SessionError('sessionError')` if:
+
+- storage is unavailable
+- the key is missing (`'no saved session'`)
+- JSON parsing fails
+- the snapshot is not a plain object
+- the version is not 1
+- the building fails re-validation (message: 'saved building invalid: <code>')
+
+## 8.6 `clearSession()`
+
+Calls `localStorage.removeItem(KEY)`. Throws `SessionError` if storage
+is unavailable or the remove throws. Idempotent — does not throw when
+the key was already absent.
+
+## 8.7 Reset semantics
+
+`building.initial_state` returned by `loadSession` is always the
+**pristine validated copy** of the saved building, never the user's
+current `state`. So `createState(building)` from the engine returns the
+original three arrays; Reset still means "back to the imported hazards",
+even after the user reloads a session with custom hazards.
+
+This is guaranteed by two facts:
+
+1. `validateBuilding` (engine.js) rebuilds each `initial_state` array
+   with `[...new Set(ids)]`, so any caller mutation prior to save does
+   not reach the validated copy.
+2. `loadSession` reconstructs the returned `state` from the
+   just-parsed JSON, giving it fresh array identities unrelated to
+   `building.initial_state`.
+
+## 8.8 Checks performed by Codex integration
+
+The integration layer (`src/app.js`, owned by Codex) should observe:
+
+| Situation | Expected `e.code` | Expected `e.message` contains |
+| --- | --- | --- |
+| `localStorage` not available | `'sessionError'` | `'localStorage unavailable'` |
+| No key present (first visit, after clear) | `'sessionError'` | `'no saved session'` |
+| Stored value not valid JSON | `'sessionError'` | `'not valid JSON'` |
+| Stored value not an object | `'sessionError'` | `'not an object'` |
+| Stored `version` !== 1 | `'sessionError'` | `'unsupported snapshot version'` |
+| Saved building fails re-validation | `'sessionError'` | `'saved building invalid: <code>'` |
+| Save with invalid building | `'sessionError'` | `'invalid building: <code>'` |
+| Save with non-serializable snapshot | `'sessionError'` | `'not serializable'` |
+| Quota exceeded on write | `'sessionError'` | `'localStorage write failed'` |
+
+The integration should treat `'sessionError'` as a recoverable
+condition: continue with a fresh in-memory session, do not show a
+hard error.
+
+## 8.9 Files
+
+- `puku1/session.js` — new file, ~115 lines.
+- No other files were touched.
+
+## 9. Desktop integration review supersedes section 8 API details
+
+Puku 1's focused follow-up added strict current-hazard category/ID validation on both save and load, required array fields, nonexit start validation (blocked selected starts remain valid), en/bn language and select/hazard mode validation. An absent saved item now returns null. Corrupt or unavailable storage still throws code sessionError. The original building initial_state is retained separately from saved current hazards.
+
+Desktop independently ran all 19 engine tests plus 19 new session tests: 38 passed, 0 failed. Nine real Chrome saved-progress checks also passed, including reload/restore, all original reset arrays, corrupt and invalid saved state preservation, clear and unavailable storage. Actual public verification is recorded separately in docs/VERIFICATION.md. Do not pattern-match English error messages in the UI; use the code and localized messages.

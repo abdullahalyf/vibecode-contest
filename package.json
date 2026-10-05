@@ -10,7 +10,10 @@
     "build": "node scripts/build.mjs",
     "check:browser": "node scripts/browser-check.mjs",
     "check:map": "node scripts/map-check.mjs",
-    "check:live": "node scripts/verify-live.mjs"
+    "check:live": "node scripts/verify-live.mjs",
+    "check:export": "node scripts/export-check.mjs",
+    "check:session": "node scripts/session-check.mjs",
+    "check:mobile": "node puku2/mobile-check.mjs"
   },
   "engines": { "node": ">=20" }
 }
