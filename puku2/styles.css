@@ -134,6 +134,70 @@ h1 { margin:0; font-size:clamp(25px,3.2vw,39px); font-weight:600; line-height:1.
 .dismiss { position:absolute; right:12px; top:10px; color:inherit; background:none; border:0; font-size:25px; }
 .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
 @keyframes route-appear { from { opacity:.5; } to { opacity:1; } }
+/* ===== Round 5 — dynamic finish (motion + 3D feel) =====
+   Constraints respected:
+   - No transforms on the SVG/map itself; geometry stays untouched.
+   - No dashed route styling, no directional moving arrows, no dark redesign,
+     no flashing, no libraries added.
+   - All animation durations are finite (longest single run is 4.6 s and only
+     plays once on load; rerender breathing is 2.4 s, route-result reveal is
+     .35 s; route-appear was already .25 s). Total per-render motion budget
+     stays well under 5 s and nothing loops.
+   - prefers-reduced-motion: every animation + transition in this block uses
+     local names listed in the reduced-motion override below, and the global
+     reduced-motion rule already nukes *,*::before,*::after.
+   - Green/red semantic distinction is preserved (.corridor.on-route green,
+     .corridor.unavailable red). Focus-visible rules from Round 3/3b are
+     untouched, so keyboard identity still wins on specificity.
+   - Inserted BEFORE both responsive blocks and the reduced-motion block so
+     those existing layouts and motion overrides keep working unchanged. */
+.workspace-grid { box-shadow:0 1px 1px #142b2808, 0 2px 6px #142b280d, 0 14px 32px -10px #142b2822; }
+.route-panel { box-shadow:inset 1px 0 0 #ffffff80, -8px 0 24px -12px #142b281a; }
+/* Tactile raised buttons + mode tabs: lift on hover/focus without moving
+   the layout (translateY stays tiny and the original padding/border-radius
+   are preserved so neighbouring elements never reflow). */
+.button,.condition-button,.reset-button,.dismiss {
+  box-shadow:0 1px 0 #ffffff80 inset, 0 1px 2px #142b281a, 0 1px 1px #142b2814;
+  transition:transform .18s ease,box-shadow .18s ease,background-color .16s,color .16s;
+}
+.button:hover,.button:focus-visible,.condition-button:hover,.condition-button:focus-visible,.reset-button:hover,.reset-button:focus-visible {
+  transform:translateY(-1px);
+  box-shadow:0 1px 0 #ffffffcc inset, 0 2px 4px #142b2824, 0 6px 14px -4px #142b2828;
+}
+.mode-tab { box-shadow:0 1px 1px #142b2810 inset; }
+.mode-tab:hover,.mode-tab:focus-visible {
+  transform:translateY(-1px);
+  box-shadow:0 1px 0 #ffffff80 inset, 0 2px 4px #142b2820, 0 4px 10px -3px #142b2824;
+}
+.mode-tab.active { box-shadow:0 1px 0 #ffffff inset, 0 1px 3px #142b2815, 0 4px 10px -3px #142b2820; }
+/* Tiny brand-mark float on page load — a one-shot 1.6 s lift + settle that
+   signals the page is alive without becoming a distraction. The SVG inside
+   is unaffected (only the wrapping .brand-mark transforms). */
+@keyframes brand-float {
+  0%   { transform:translateY(-6px); opacity:0; box-shadow:0 1px 0 #ffffff80 inset, 0 2px 4px #142b2820, 0 0 0 0 #142b2820; }
+  40%  { transform:translateY(-3px); opacity:1; box-shadow:0 1px 0 #ffffff80 inset, 0 4px 10px #142b2828, 0 0 0 6px #142b2808; }
+  100% { transform:translateY(0);    opacity:1; box-shadow:0 1px 0 #ffffff80 inset, 0 2px 4px #142b2820, 0 0 0 0 #142b2800; }
+}
+.brand-mark { animation:brand-float 1.6s ease-out 1 both; transform-origin:center; }
+/* Gentle breathing on the route highlight after rerender — the existing
+   route-appear fade is kept; this adds a brief 2.4 s halo pulse around the
+   green stroke so a rerender reads as a fresh result instead of a flash.
+   It only changes drop-shadow on the corridor's stroke (no geometry, no
+   dashed style, no movement). Plays once per rerender via .breathe class. */
+@keyframes route-breathe {
+  0%   { filter:drop-shadow(0 0 0 #286d5100); }
+  35%  { filter:drop-shadow(0 0 6px #286d5166); }
+  100% { filter:drop-shadow(0 0 0 #286d5100); }
+}
+.corridor.on-route .corridor-line { animation:route-appear .25s ease-out 1,route-breathe 2.4s ease-out 1; }
+/* Quick route-result reveal: the panel content fades + rises slightly so the
+   user notices the new result without the content jumping. Duration .35 s,
+   so it stays well inside the per-render cap. Plays on .route-result.reveal. */
+@keyframes result-reveal {
+  from { opacity:0; transform:translateY(6px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.route-result { animation:result-reveal .35s ease-out 1 both; transform-origin:top center; }
 @media (max-width:950px) { .local-note { display:none; } .building-stats { gap:16px; } .workspace-grid { grid-template-columns:minmax(0,1fr) 260px; } .conditions-grid { gap:15px; } }
 @media (max-width:720px) {
   /* Mobile map readability: the 680-unit SVG would otherwise compress to

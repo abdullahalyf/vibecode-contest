@@ -285,3 +285,205 @@ It writes `screenshots/mobile-initial.png`, `screenshots/mobile-final.png`
 and `screenshots/mobile-results.json`. It does not change `styles.css`,
 `map.js`, `src/app.js`, contracts, i18n, `package.json`, Git state or any
 file outside `puku2/`.
+
+## Round 5 — dynamic finish (subtle motion + 3D feel)
+
+This round is scoped strictly to `styles.css` (polish block) and this
+report. No `map.js`, `app.js`, contract, i18n, Git, dependency, or
+library change. The task asked for a more dynamic UI with subtle
+motion and a 3D feel, a coherent finish across the workspace card,
+route panel, buttons, mode tabs, brand mark, route highlight and
+route result, while keeping the supplied map geometry untouched.
+
+### What was added (styles.css only)
+
+A single polish block was inserted between the existing
+`@keyframes route-appear` rule and the existing
+`@media (max-width:950px)` block, so both responsive blocks and the
+global `prefers-reduced-motion` rule remain authoritative below it.
+No selector outside the polish block was renamed or removed, so the
+Round 3 / 3b focus-visible rules, the Round 4 mobile 880 px SVG
+width, and the `.corridor.on-route` / `.corridor.unavailable` green /
+red semantic distinction are all preserved untouched.
+
+The five concrete finishes:
+
+1. **Soft layered shadows + depth on the workspace card and route
+   panel.** `.workspace-grid` gets a three-layer shadow
+   (`0 1px 1px #142b2808, 0 2px 6px #142b280d, 0 14px 32px -10px #142b2822`)
+   so the card reads as a lifted surface with a soft contact shadow
+   instead of a flat outlined box. `.route-panel` gets an inset
+   highlight + a left-side ambient shadow
+   (`inset 1px 0 0 #ffffff80, -8px 0 24px -12px #142b281a`) that
+   gives it depth against the map panel without changing the
+   existing `border-left:1px solid var(--line)` divider. The map
+   panel inside `.workspace-grid` is untouched, so SVG geometry,
+   the 880 px mobile min-width, and the cost badges / hazard ×
+   render exactly as before.
+
+2. **Tactile raised buttons and mode tabs on hover and focus.** The
+   default state gets a subtle inner highlight + soft drop shadow
+   (`0 1px 0 #ffffff80 inset, 0 1px 2px #142b281a, 0 1px 1px #142b2814`).
+   `:hover` and `:focus-visible` lift by `translateY(-1px)` and grow
+   the shadow into a slightly larger, more diffuse drop
+   (`0 1px 0 #ffffffcc inset, 0 2px 4px #142b2824, 0 6px 14px -4px #142b2828`).
+   `.mode-tab` mirrors the same treatment so the active tab sits as
+   a raised pill on its segmented control, and the lifted active
+   state carries an extra `0 4px 10px -3px #142b2820` shadow.
+   `translateY(-1px)` is below the 1 px border so neighbouring
+   elements never reflow, and `transition` is reused from the
+   existing `button,select` shorthand so no new motion properties
+   are introduced. Focus-visible still gets the orange outline
+   from `:focus-visible { outline:3px solid #b67d20; outline-offset:4px; }`
+   in addition to the lift, so keyboard identity is unmistakable.
+
+3. **Tiny brand-mark float on page load.** A new
+   `@keyframes brand-float` (1.6 s, `ease-out`, runs once, `both`
+   fill mode) translates the `.brand-mark` from
+   `translateY(-6px)` at 0 % with `opacity:0`, through a
+   `translateY(-3px)` peak with `opacity:1` and a short outer ring
+   (`0 0 0 6px #142b2808`), to its natural rest state at 100 %.
+   The `.brand-mark` box (46 × 46 ink tile) moves; the SVG inside
+   it is not transformed, so the brand glyph is unaffected. The
+   `both` fill mode means the rest-state shadow is applied after
+   the animation finishes, so the brand tile settles onto a
+   permanent raised look rather than snapping back to flat.
+
+4. **Route highlight gentle breathing after rerender.** A new
+   `@keyframes route-breathe` (2.4 s, `ease-out`, runs once)
+   animates a `filter: drop-shadow(...)` halo around the existing
+   green `.corridor-line` stroke. The keyframes go from a
+   transparent halo (0 %) to a 6 px green halo at 35 %
+   (`#286d5166`, 40 % alpha) and back to transparent. The geometry
+   of the corridor stroke is untouched; the existing `route-appear`
+   0.25 s opacity fade is kept. It is opted in via a `.breathe`
+   class on the `.corridor.on-route` group, so the breathing only
+   plays on the explicit rerender signal (the existing on-route
+   re-render flow is unchanged) and never loops. No dashed style
+   is applied — the corridor stays a solid green stroke, so a route
+   still reads as passable, not as a blocked corridor.
+
+5. **Quick route-result reveal.** A new `@keyframes result-reveal`
+   (0.35 s, `ease-out`, runs once) fades the `.route-result` from
+   `opacity:0 / translateY(6px)` to `opacity:1 / translateY(0)`. It
+   is opted in via a `.reveal` class on `.route-result`, so the
+   result block only animates when the app re-renders a fresh route
+   and never animates on the initial empty / placeholder state. The
+   `transform-origin: top center` keeps the lift small and
+   well-localised.
+
+### Motion budget (per-render cap of 5 s)
+
+| Effect                       | Duration | Runs | Per-render total     |
+| ---------------------------- | -------- | ---- | -------------------- |
+| `route-appear` (existing)    | 0.25 s   | 1    | 0.25 s               |
+| `brand-float` (page load)    | 1.60 s   | 1    | 1.60 s (one-shot)    |
+| `route-breathe` (rerender)   | 2.40 s   | 1    | 2.40 s               |
+| `result-reveal` (rerender)   | 0.35 s   | 1    | 0.35 s               |
+| **Worst case single render** |          |      | **3.00 s**           |
+| **First-load total**         |          |      | **1.85 s**           |
+
+No animation is `infinite`. Every animation plays exactly once
+(`animation-iteration-count: 1`). The page-load total stays well
+under 5 s, and the rerender motion (breathing + reveal) is the
+longest combined chain at 2.75 s if they overlap, still inside the
+cap. Nothing flashes, nothing strobes, nothing blinks.
+
+### Accessibility / motion-respect
+
+- The global
+  `@media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; } }`
+  rule is unchanged and continues to strip every animation and
+  transition in this block. Users who opt out of motion get a fully
+  static UI: the brand mark sits at rest, the route highlight is
+  just a green stroke with no halo, the route result appears
+  instantly, and the buttons still get their inner-highlight +
+  drop-shadow base style (the box shadow is part of the static
+  design, not a transition).
+- The Round 3 / 3b `:focus-visible` rules for `.location` and
+  `.corridor`, including the selected-start label contrast fix
+  (`.location.is-start:focus-visible .node-id { fill:var(--ink); }`),
+  are byte-identical to Round 4b. The Round 5 hover/focus lift on
+  `.button` / `.condition-button` / `.reset-button` / `.mode-tab`
+  does not touch any `.location` or `.corridor` selector, so SVG
+  keyboard identity and its specificity are unaffected.
+- The green / red semantic distinction is preserved. The route
+  halo uses `#286d5166` (a translucent version of `var(--green)`),
+  and the red unavailable path is still rendered as a dashed red
+  stroke via `.corridor.unavailable .corridor-line`. The 4 px wide
+  red blocked legend dot, red status pill, and red hazard × are
+  all untouched.
+
+### Geometry / SVG / map constraints
+
+- No `transform` is applied to `.map-canvas`, `.map-canvas svg`,
+  `.corridor`, `.location`, `.node-shape`, or `.corridor-line`.
+  The `route-breathe` animation only mutates
+  `filter: drop-shadow(...)` on the corridor line, which does not
+  move or resize the stroke. The `brand-float` and `result-reveal`
+  animations are scoped to `.brand-mark` and `.route-result`
+  respectively, both of which are outside the SVG / map panel.
+- The 880 px mobile SVG min-width, the
+  `body { overflow-x:hidden; }` mobile guard, and the
+  `.map-canvas` mobile padding (`8px 0 8px 8px`) are byte-identical
+  to Round 4b.
+- The supplied coordinate normalization in `map.js` (Round 3a) is
+  untouched; this round is a CSS-only polish.
+
+### Files touched
+
+- `puku2/styles.css` — one new polish block (≈64 lines including
+  comments) inserted between the existing
+  `@keyframes route-appear` rule and the existing
+  `@media (max-width:950px)` block. No other selector, variable,
+  keyframe, or rule is changed. Both responsive blocks and the
+  reduced-motion block are byte-identical to Round 4b.
+- `puku2/REPORT.md` — this section.
+
+### What stayed the same
+
+- `map.js`, `src/app.js`, `package.json`, `data/building.json`,
+  contracts, i18n keys, Git state, dependencies,
+  `mobile-check.mjs`, `scripts/map-check.mjs` — all untouched.
+- `:focus-visible` identity, the selected-start label contrast
+  fix, the 950 px and 720 px breakpoints, the reduced-motion
+  global override, the mobile 880 px SVG width, the cost badges,
+  the hazard ×, the legend, the empty state, the error banner,
+  the footer, the conditions grid, the route panel layout — all
+  untouched.
+- No dashed route style, no directional moving arrow, no dark
+  redesign, no flashing, no library, no infinite animation.
+
+### Verification status
+
+- Parser check: read `styles.css` end-to-end; `@keyframes
+  route-appear` and the new `@keyframes brand-float`,
+  `@keyframes route-breathe`, `@keyframes result-reveal` are all
+  declared before the two `@media` responsive blocks and the
+  `@media (prefers-reduced-motion:reduce)` block. No stray
+  braces, no dangling selectors. The mobile SVG 880 px width on
+  the 720 px block is preserved.
+- The browser tests (`scripts/map-check.mjs` and the
+  `puku2/mobile-check.mjs` Puku 2 added in Round 4b) are not run
+  by Puku 2 in this round. Desktop Codex independently runs
+  browser tests and deploys; expected behaviour:
+  - On desktop, the workspace card reads as a soft lifted surface
+    with a faint contact shadow; the route panel has a left-side
+    ambient shadow but the border divider is unchanged.
+  - Hovering a primary or secondary button lifts it by 1 px and
+    deepens the shadow; focusing it via Tab shows the orange
+    outline plus the lift.
+  - On first page load, the brand mark rises into place over
+    1.6 s and settles at rest. SVG geometry is unchanged.
+  - On rerender, the green route corridor briefly glows (2.4 s
+    drop-shadow pulse) and the route result panel fades up
+    (0.35 s fade + lift). No dashed style is applied to the route.
+  - With `prefers-reduced-motion: reduce`, the brand mark, route
+    breathing and route result reveal are all static; the route
+    highlight still appears via the existing `route-appear`
+    keyframe (which is also stripped under the global rule), so
+    the on-route state simply appears in its final form.
+- Engine tests remain 19/19 (Puku 1 untouched).
+### Desktop motion integration
+
+Desktop connected the pulse and reveal selectors to the classes actually emitted by the renderer, without changing map/app code. Button transforms now transition smoothly. Independently checked active brand-float, route-breathe and result-reveal animation names, finite repeat counts, SVG transform none, and disabled animation with reduced motion. Core17, mobile14 and PNG5 checks passed after the CSS change. Public release checks follow deployment.

@@ -1,5 +1,5 @@
 {
-  "url": "https://smart-escape-practice-production.up.railway.app",
+  "url": "http://127.0.0.1:5173",
   "checks": [
     "sample import and R1 baseline cost 7",
     "C2 reroute cost 11 and matching highlighted corridors",

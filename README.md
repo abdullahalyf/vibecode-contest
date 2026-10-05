@@ -42,7 +42,7 @@ See `docs/PLAN.md`, `docs/CONTRACT.md` and `AGENTS.md` for requirements, interfa
 - Block/unblock rooms, junctions and corridors; close/reopen exits.
 - Immediate rerouting, blocked-start and no-route statuses, and reset to imported initial state.
 - English/Bangla controls, errors, statuses and instructions.
-- Keyboard controls, reduced-motion support, responsive layout and brief route transitions.
+- Keyboard controls, reduced-motion support, responsive layout, layered card depth, tactile hover states, and brief logo/route/panel animations.
 
 Optional extensions implemented: keyboard access, reduced-motion support, PNG map export and browser-local saved progress. Use Save progress before leaving, then Restore progress after reopening this site in the same browser. Clear saved progress removes the stored snapshot without changing the current simulation. Alternative routes are not implemented.
 
