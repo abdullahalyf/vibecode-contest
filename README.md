@@ -70,7 +70,7 @@ Screenshots: [baseline](screenshots/baseline.png), [C2 reroute](screenshots/rero
 
 An optional development-only browser acceptance script is available as `npm run check:browser`. It requires Playwright and installed Chrome; neither is shipped to the live app. Set `SMART_ESCAPE_PLAYWRIGHT` to an existing Playwright module path when using a bundled runtime. Set `SMART_ESCAPE_URL` to test a public deployment rather than the local development server. Actual results are saved in `screenshots/browser-results.json`.
 
-For restricted environments where Node cannot launch test workers, Node 22+ can run `node --test --test-isolation=none puku1/engine.test.js puku1/session.test.js`. This runs the same assertions in the current process; it does not bypass failing tests. The reviewed version passes 38 engine/storage tests. Additional Chrome checks are available through `check:map`, `check:export`, `check:session` and `check:mobile`; none ship to the deployed app.
+For restricted environments where Node cannot launch test workers, Node 22+ can run `node --test --test-isolation=none`. This runs the same assertions in the current process; it does not bypass failing tests. The reviewed version passes 38 engine/storage tests. Additional Chrome checks are available through `check:map`, `check:export`, `check:session` and `check:mobile`; none ship to the deployed app.
 
 ## Deployment
 
