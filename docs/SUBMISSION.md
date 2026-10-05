@@ -18,7 +18,7 @@ https://github.com/abdullahalyf/vibecode-contest
 
 ## Identity and commit
 
-Full name supplied: Abdullah Alif. Registration number: not supplied. If the form asks for registration, enter your actual number. For the final submission commit use the latest pushed commit reported by Desktop Codex; `git rev-parse HEAD` also gives the complete ID. The reviewed app source commit was b88a66defcfc3b3e8e0768213087a065daa9a2d2; the following evidence-only commit preserves identical app assets.
+Full name: Abdullah Alif. Student ID: 252-15-834. Email: 252-15-834@diu.edu.bd. For the final submission commit use the latest pushed commit reported by Desktop Codex; `git rev-parse HEAD` also gives the complete ID. The reviewed app source commit was b88a66defcfc3b3e8e0768213087a065daa9a2d2; subsequent documentation-only commits preserve identical app assets.
 
 ## Verified delivery
 

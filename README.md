@@ -2,6 +2,12 @@
 
 Browser-only evacuation route simulator for the **Smart Escape practice challenge**. This repository is practice, created before the official contest. Do not reuse its project code as a fresh contest submission.
 
+**[Open live demo](https://smart-escape-practice-production.up.railway.app/)** · [Sample building JSON](data/building.json) · English / বাংলা
+
+[![Smart Escape — R1 to the North Exit, total cost 7](screenshots/user-export-baseline.png)](https://smart-escape-practice-production.up.railway.app/)
+
+Built by **Abdullah Alif** · Student ID **252-15-834** · **252-15-834@diu.edu.bd**
+
 ## Run and verify
 
 Requires Node.js 20 or later. No packages need installing.
@@ -46,6 +52,30 @@ See `docs/PLAN.md`, `docs/CONTRACT.md` and `AGENTS.md` for requirements, interfa
 
 Optional extensions implemented: keyboard access, reduced-motion support, PNG map export and browser-local saved progress. Use Save progress before leaving, then Restore progress after reopening this site in the same browser. Clear saved progress removes the stored snapshot without changing the current simulation. Alternative routes are not implemented.
 
+## Demo gallery
+
+Select **R1** for the baseline route, then block **C2** to see the route move to the South Exit. Both examples below keep the same starting location.
+
+| Baseline · cost 7 | C2 blocked · cost 11 |
+| --- | --- |
+| [![Baseline route to North Exit](screenshots/baseline.png)](screenshots/baseline.png) | [![Rerouted path to South Exit after blocking C2](screenshots/reroute-c2.png)](screenshots/reroute-c2.png) |
+
+<details>
+<summary>Explore the Bangla mobile interface</summary>
+
+<p><img src="screenshots/polished-mobile.png" alt="Smart Escape mobile interface with a scrollable map and route controls" width="360"></p>
+
+<p><img src="screenshots/bangla-mobile.png" alt="Bangla interface with localized route status and building controls" width="360"></p>
+
+</details>
+
+<details>
+<summary>View the full desktop interface</summary>
+
+![Full Smart Escape desktop interface](screenshots/polished-desktop.png)
+
+</details>
+
 ## Published sample checks
 
 | Scenario | Expected |
@@ -68,12 +98,13 @@ Railway configuration is included for standard Caddy static-file hosting. Build 
 
 ## Submission information
 
-- Name: Abdullah Alif (confirm official spelling before submission).
-- Registration number: not supplied.
+- Name: Abdullah Alif.
+- Student ID: 252-15-834.
+- Email: 252-15-834@diu.edu.bd.
 - Public HTTPS live link: https://smart-escape-practice-production.up.railway.app
 - AI tools used: Codex and two parallel Puku CLI sessions, with separate ownership for engine, map and integration work.
 - Useful prompt: “Build Smart Escape as a browser-only bilingual simulator with strict schema validation, undirected minimum-cost routing, exact exit/path tie-breaking, immediate hazard updates and reset to imported initial state. Separate pure engine, SVG map and integration modules, then verify the five official sample cases and unseen-graph edge cases.”
-- Known limitations: crowded layouts/long map labels need further review; registration number is not supplied. Input files are limited to 2 MB and costs must remain within JavaScript's safe integer range. Railway availability depends on remaining trial credits.
+- Known limitations: coincident coordinates and long map labels may overlap. Input files are limited to 2 MB and costs must remain within JavaScript's safe integer range. Railway availability depends on remaining trial credits.
 
 Educational simulation only; not a certified real-world evacuation planning tool.
 

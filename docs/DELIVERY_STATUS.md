@@ -11,4 +11,4 @@ Repository: https://github.com/abdullahalyf/vibecode-contest
 
 The first public deployment was successful. Final release verification is recorded in docs/VERIFICATION.md and docs/DEPLOYMENT_VERIFICATION.json after the integrated version is published. Submission values are in docs/SUBMISSION.md. Required screenshots show the same R1 start before and after blocking C2. User-provided exported PNGs are also preserved under screenshots/ with descriptive filenames.
 
-This repository is the mock/practice entry supplied by the user. The official event requires a fresh T+0 project and registration-based repository name; this practice repository does not establish official eligibility. No registration number has been supplied.
+This repository is the mock/practice entry supplied by the user. The official event requires a fresh T+0 project and registration-based repository name; this practice repository does not establish official eligibility. Identity supplied: Abdullah Alif, student ID 252-15-834, email 252-15-834@diu.edu.bd.

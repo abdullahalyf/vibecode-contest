@@ -19,6 +19,6 @@ Reviewed against all three pages of Smart_Escape_Problem_Statement.pdf on 5 Octo
 
 Bonus features implemented: PNG download, saved progress, keyboard controls and visible focus. Alternative routes and advanced walkthroughs are not implemented.
 
-Administrative limits: registration number has not been provided. The user requested this existing mock/practice repository. Official contest eligibility additionally requires the organizer's registration-based repo name, fresh T+0 code and correct contest timing; this project does not claim that eligibility. Every recorded commit includes its prompt; the final release has at least three commits. The form itself remains for the participant to submit.
+Identity supplied: Abdullah Alif, student ID 252-15-834, email 252-15-834@diu.edu.bd. The user requested this existing mock/practice repository. Official contest eligibility additionally requires the organizer's registration-based repo name, fresh T+0 code and correct contest timing; this project does not claim that eligibility. Every recorded commit includes its prompt; the final release has at least three commits. The form itself remains for the participant to submit.
 
 Known layout limits: coincident nodes and unusually long dataset labels may overlap. Mobile uses native scrolling within the map; the document itself does not overflow horizontally. The final integration increases the sample map width to 880px for readable 12px labels, and preserves scroll position during rerenders. Imported costs must fit safe integers; file size is limited to 2 MB.

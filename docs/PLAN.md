@@ -52,7 +52,7 @@ Commit at least once every 30 minutes and at least three times total. Every mess
 
 ## Outstanding information
 
-- University registration number: not supplied.
+- Student ID supplied: 252-15-834. Name: Abdullah Alif. Email: 252-15-834@diu.edu.bd.
 - Official contest's actual problem: not yet released; Smart Escape is the mock exercise.
 - Hosting: Railway static Caddy service at https://smart-escape-practice-production.up.railway.app.
 - Puku CLI sessions: user launches manually with `puku-cli`.
