@@ -20,26 +20,6 @@ npm run build
 
 Open http://127.0.0.1:5173. Choose **Load sample**, then select **R1**. To import another dataset, use **Import building**. Build output is in `dist/`; publish that folder to a static HTTPS host. The deployed app has no server, database, external runtime API, or credentials. All imported files stay in the browser.
 
-## Parallel Puku sessions
-
-Open two terminals:
-
-```powershell
-# Terminal 1
-Set-Location 'C:\Users\Abdullah Alif\Desktop\vibecode\puku1'
-puku-cli
-```
-
-```powershell
-# Terminal 2
-Set-Location 'C:\Users\Abdullah Alif\Desktop\vibecode\puku2'
-puku-cli
-```
-
-Paste each folder's START_HERE.md prompt. Puku 1 owns routing/validation. Puku 2 owns the map/CSS. Codex owns integration and Git. Both folders are inside one repository; do not let Puku sessions run Git mutations. The initial baseline already works, so each session can review and improve its part independently.
-
-See `docs/PLAN.md`, `docs/CONTRACT.md` and `AGENTS.md` for requirements, interfaces and file ownership.
-
 ## Features
 
 - Validated local JSON import and supplied sample building.
@@ -102,8 +82,6 @@ Railway configuration is included for standard Caddy static-file hosting. Build 
 - Student ID: 252-15-834.
 - Email: 252-15-834@diu.edu.bd.
 - Public HTTPS live link: https://smart-escape-practice-production.up.railway.app
-- AI tools used: Codex and two parallel Puku CLI sessions, with separate ownership for engine, map and integration work.
-- Useful prompt: “Build Smart Escape as a browser-only bilingual simulator with strict schema validation, undirected minimum-cost routing, exact exit/path tie-breaking, immediate hazard updates and reset to imported initial state. Separate pure engine, SVG map and integration modules, then verify the five official sample cases and unseen-graph edge cases.”
 - Known limitations: coincident coordinates and long map labels may overlap. Input files are limited to 2 MB and costs must remain within JavaScript's safe integer range. Railway availability depends on remaining trial credits.
 
 Educational simulation only; not a certified real-world evacuation planning tool.
